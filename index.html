@@ -1,0 +1,225 @@
+<html>
+<head>
+
+	<title>Items List - HTML</title>
+	<link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.1/ui-bootstrap-tpls.min.js"></script>
+	<script src="app.js"></script>
+
+	<style type="text/css">
+		body { font-size: 12px; }
+		.col-8 { width: 12%; min-height: 10px; float: left; }
+		.col-5 { width: 20%; float: left; }
+		.wrapper { width:95%; margin: 15px auto; }
+		.headers { color: #000; }
+		.item-row { margin-bottom: 5px; }
+		.Pending { border: 2px solid #d3d3d3; color: #d3d3d3; 
+			-webkit-box-shadow: inset 120px 50px 300px -70px rgba(211,211,211,0.20);
+			-moz-box-shadow: inset 120px 50px 300px -70px rgba(211,211,211,0.20);
+			box-shadow: inset 120px 50px 300px -70px rgba(211,211,211,0.20);}
+		.PendingProgress { background-color: #d3d3d3; }
+		.Running { border: 2px solid #559bd6; color: #559bd6;  
+			-webkit-box-shadow: inset 120px 0px 300px -100px rgba(85,155,214,0.20);
+			-moz-box-shadow: inset 120px 0px 300px -100px rgba(85,155,214,0.20);
+			box-shadow: inset 120px 0px 300px -100px rgba(85,155,214,0.20);}
+		.RunningProgress { background-color: #559bd6; }
+		.Rejected { border: 2px solid #bf0000; color: #bf0000; 
+			-webkit-box-shadow: inset 120px 0px 300px -100px rgba(191,0,0,0.20);
+			-moz-box-shadow: inset 120px 0px 300px -100px rgba(191,0,0,0.20);
+			box-shadow: inset 120px 0px 300px -100px rgba(191,0,0,0.20); }
+		.RejectedProgress { background-color: #bf0000; }
+		.Complete, .Accepted { border: 2px solid #54802f; color: #54802f; 
+			-webkit-box-shadow: inset 120px 0px 300px -100px rgba(84,128,47,0.20); 
+			-moz-box-shadow: inset 120px 0px 300px -100px rgba(84,128,47,0.20);
+			box-shadow: inset 120px 0px 300px -100px rgba(84,128,47,0.20); }
+		.CompleteProgress, .AcceptedProgress { background-color: #54802f; }
+		.item-row .row-1st { width: 100%; height: 20px; margin: 5px 0; }
+		.item-row .row-2nd { }
+		.type-img { float: left; width: 20px; height: 20px; margin-right: 10px; }
+		.type-img.img-build { background: url(sprite.png) -20px -40px; }
+		.type-img.img-fwall { background: url(sprite.png) -43px -40px; }
+		.percentages {}
+		.item-box { border: 2px solid #54802f; margin: 5px; padding: 5px; color: #54802f; height: 180px;-webkit-box-shadow: 3px 3px 11px 0px rgba(0,0,0,0.75); 
+			-moz-box-shadow: 3px 3px 11px 0px rgba(0,0,0,0.75);
+			box-shadow: 3px 3px 11px 0px rgba(0,0,0,0.75); 
+		}
+		.result-box { text-align: center; padding-top: 20px; }
+		.arrow-row { display: inline-block; margin-left: 1em; }
+		.arrow-wrapper { width: 80px; height: 80px; text-align: center; float: left; color: #000; }
+		.arrow { margin: 10px auto; text-align: center; color: white; }
+		.arrow.top {  width: 40px; height: 40px; padding-top: 10px; }
+		.arrow.bottom { width: 40px; height: 30px; padding-top: 10px; }
+		.green { background: url(sprite.png) -345px 0px no-repeat; /*green*/ }
+		.yellow { background: url(sprite.png) -400px 0px; color: #000 !important; /*yellow*/ }
+		.build-icon { width: 50%; height: 100px; float: left; text-align: center; color: #559bd6; margin-bottom: 30px; }
+		.build-icon-img { width: 40px; height: 33px; background: url(sprite.png) -250px no-repeat; margin: 20px auto 10px; }
+		.build-time { text-align: center; color: #000; }
+		.black { color: #000 !important;}
+		.small-bar { width: 40px !important; height: 25px !important; margin-bottom: 5px !important; border-radius: 0 !important; border: 1px solid #ccc; }
+		.pass-firewall { color: #fcc025; }
+
+	</style>
+
+	<!-- CSS to be converted to LESS -->
+</head>
+
+<body ng-app="listApp" ng-controller="ItemsCtrl">
+
+
+	<div class="wrapper" >
+		<div class="container-fluid">
+	
+			<div class="row headers">
+				<div class="col-8">Changelist / Build</div>
+				<div class="col-8">Owner</div>
+				<div class="col-8">Time Started</div>
+				<div class="col-8">State</div>
+				<div class="col-8">Metrics</div>
+				<div class="col-8">Build</div>
+				<div class="col-8">Unit Test</div>
+				<div class="col-8">Functional Test</div>
+			</div>
+	
+			<div class="row item-row" ng-class="item.state" ng-repeat="item in items">
+				<div class="contracted row-1st" ng-click="showDetail(item)">
+					<div class="col-8">
+						<div ng-if="item.type == 'build'" class="type-img img-build"></div>
+						<div ng-if="item.type == 'firewall'" class="type-img img-fwall"></div>
+						{{item.serial}}
+					</div>
+					<div class="col-8">{{item.owner}}</div>
+					<div class="col-8">{{item.time}}</div>
+					<div class="col-8">{{item.state}}</div>
+					<div class="percentages">
+						<div class="col-8">
+							<div class="progress small-bar">
+    							<div class="progress-bar" 
+    								ng-class="item.metrics.state + 'Progress'" 
+    								ng-style="{'width': item.metrics.progress + '%'}">
+    							</div>
+    						</div>
+						</div>
+						<div class="col-8">
+							<div class="progress small-bar">
+    							<div class="progress-bar" 
+    								ng-class="item.build.state + 'Progress'" 
+    								ng-style="{'width': item.build.progress + '%'}">
+    							</div>
+    						</div>
+    					</div>
+						<div class="col-8">
+							<div class="progress small-bar">
+    							<div class="progress-bar" 
+    								ng-class="item.unitTest.state + 'Progress'" 
+    								ng-style="{'width': item.unitTest.progress + '%'}">
+    							</div>
+    						</div>
+    					</div>
+						<div class="col-8">
+							<div class="progress small-bar">
+    							<div class="progress-bar" 
+    								ng-class="item.functTest.state + 'Progress'" 
+    								ng-style="{'width': item.functTest.progress + '%'}">
+    							</div>
+    						</div>
+    					</div>
+					</div>
+				</div>
+				<div class="expanded row-2nd" ng-show="active==item">
+					<div class="col-5"> 
+						<div class="item-box">
+							Metrics<br>
+							<div class="arrow-row">
+								<div class="arrow-wrapper">
+									<div class="arrow top green">64</div>
+									Test
+								</div>
+								<div class="arrow-wrapper">
+									<div class="arrow top green">53</div>
+									Maintainability
+								</div>
+							</div>
+							<div class="arrow-row">
+								<div class="arrow-wrapper">
+									<div class="arrow bottom yellow">64</div>
+									Security
+								</div>
+								<div class="arrow-wrapper">
+									<div class="arrow bottom yellow">72</div>
+									Workmanship
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-5"> 
+						<div class="item-box">
+							Build<br>
+							<div class="build-icon">
+								<div class="build-icon-img"></div>
+								Debug
+							</div>
+							<div class="build-icon">
+								<div class="build-icon-img"></div>
+								Release
+							</div>
+							<div class="build-time">10:46am - 4/17/2014</div>
+						</div>
+					</div>
+					<div class="col-5"> <div class="item-box">Unit Test</div></div>
+					<div class="col-5"> <div class="item-box">Functional Test</div></div>
+					<div class="col-5">
+						<div class="result-box">
+							<span class="black">Result:</span>
+							
+							<div ng-if="item.type == 'build'">
+
+			 					<div ng-if="item.state == 'Pending'"> <!-- Pending -->
+			 						<h3>Not Specified</h3>
+			 					</div>
+
+		 						<div ng-if="item.state == 'Complete'"> <!-- Complete -->
+									<h3>Complete</h3><br>
+									<div class="build-complete">
+										<button type="button" class="btn btn-primary btn-sm custom-btn">Deploy</button> to:<br><br>
+										<div class="dropdown"> <!-- Button -->
+										<button class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" type="button" aria-expanded="false">
+											Production
+											<span class="caret"></span>
+										</button>
+										<ul class="dropdown-menu" role="menu">
+											<li role="presentation"><a role="menuitem" tabindex="-1" href="">Other</a></li>
+										</ul>
+									</div>
+								</div><!-- End Complete -->
+
+								<div ng-if="item.state == 'Fail'"> <!-- Fail -->
+									Not Shown
+								</div>
+							</div>
+							</div><!-- End Build -->
+
+							<div ng-if="item.type == 'firewall'">
+								<div ng-if="item.state == 'Running'"> <!-- Running -->
+									<h3>Not Specified</h3>
+								</div>
+								<div ng-if="item.state == 'Accepted'" class="pass-firewall"> <!-- Accepted -->
+									<span>Change Accepted</span><h3>Auto-Merged</h3><br>
+									<button type="button" class="btn btn-primary btn-sm custom-btn">Merged Build</button>
+								</div>
+								<div ng-if="item.state == 'Rejected'"> <!-- Rejected -->
+									<span>Change Rejected</span><h3>Metrics Reduction</h3><br>
+									<button type="button" class="btn btn-primary btn-sm custom-btn">Find Issues</button>
+								</div>
+							</div><!-- End Firewall -->
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>
