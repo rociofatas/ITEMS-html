@@ -4,6 +4,9 @@
 	<title>Items List - HTML</title>
 	<link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
+	<!-- <link href="styles.less" type="text/css" rel="stylesheet/less"/> -->
+  	<!-- <script src="less.js" type="text/javascript"></script> -->
+
 	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.12.1/ui-bootstrap-tpls.min.js"></script>
 	<script src="app.js"></script>
@@ -87,12 +90,13 @@
 					<div class="col-8">
 						<div ng-if="item.type == 'build'" class="type-img img-build"></div>
 						<div ng-if="item.type == 'firewall'" class="type-img img-fwall"></div>
-						{{item.serial}}
+						<span ng-if="active == item" style="text-decoration:underline; font-weight:bold;">{{item.serial}}</span>
+						<span ng-if="active != item">{{item.serial}}</span>
 					</div>
 					<div class="col-8">{{item.owner}}</div>
 					<div class="col-8">{{item.time}}</div>
 					<div class="col-8">{{item.state}}</div>
-					<div class="percentages">
+					<div class="percentages" ng-hide="active==item">
 						<div class="col-8">
 							<div class="progress small-bar">
     							<div class="progress-bar" 
